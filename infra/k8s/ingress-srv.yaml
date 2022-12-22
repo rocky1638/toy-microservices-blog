@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    # a single k8s cluster can host
+    # multiple websites at different domains
+
+    # for now, we access this host (but it's actually localhost:80)
+    # we did this override in /etc/hosts
+    - host: posts.com
+      # routing rules
+      http:
+        # these paths are matched from the top,
+        # just like react router
+        paths:
+          # requests to /posts/create go to...
+          - path: /posts/create
+            pathType: Prefix
+            backend:
+              service:
+                # posts pod clusterip service on port 4000
+                name: posts-clusterip-srv
+                port:
+                  number: 4000
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 4002
+          - path: /posts/?(.*)/comments
+            pathType: Prefix
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 4001
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000

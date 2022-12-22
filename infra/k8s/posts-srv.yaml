@@ -1,0 +1,17 @@
+# NodePort exposes port container/pod to the outside world.
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-srv
+spec:
+  type: NodePort
+  # find these pods in the cluster!
+  # (designated in the posts deployment)
+  # kind of similar to css
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 4000 # the port of the service, not the pod!
+      targetPort: 4000 # port that is on the pod/application!

@@ -1,0 +1,38 @@
+# Deployment manages pods.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-bus-depl
+spec:
+  # for the deployment to know which pods to manage
+  selector:
+    matchLabels:
+      app: event-bus
+  # to label the pods that the deployment manages
+  template:
+    metadata:
+      labels:
+        app: event-bus
+    # spec for the actual containers in the pods
+    spec:
+      containers:
+        - name: event-bus
+          image: rocky1638/microservicesblog-eventbus
+---
+# ClusterIP services provides access for other nodes.
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-bus-srv
+spec:
+  type: ClusterIP # this is default
+  # find these pods in the cluster!
+  # (designated in the posts deployment)
+  # kind of similar to css
+  selector:
+    app: event-bus
+  ports:
+    - name: event-bus
+      protocol: TCP
+      port: 4005 # the port of the service, not the pod!
+      targetPort: 4005 # port that is on the pod/application!

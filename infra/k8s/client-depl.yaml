@@ -1,0 +1,38 @@
+# Deployment manages pods.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  # for the deployment to know which pods to manage
+  selector:
+    matchLabels:
+      app: client
+  # to label the pods that the deployment manages
+  template:
+    metadata:
+      labels:
+        app: client
+    # spec for the actual containers in the pods
+    spec:
+      containers:
+        - name: client
+          image: rocky1638/microservicesblog-client
+---
+# ClusterIP services provides access for other nodes.
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  type: ClusterIP # this is default
+  # find these pods in the cluster!
+  # (designated in the posts deployment)
+  # kind of similar to css
+  selector:
+    app: client
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000 # the port of the service, not the pod!
+      targetPort: 3000 # port that is on the pod/application!
