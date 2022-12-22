@@ -1,5 +1,9 @@
 # Microservices Toy Blog App w/ Stephen Grider
 
+- Start up with `skaffold dev`
+- Access on `posts.com`
+  - Need to edit your `/etc/hosts` file to point that URL to localhost.
+
 ## General Architecture
 
 - The features of the blog are to allow a user to create posts and add comments to these posts.
